@@ -1,0 +1,31 @@
+# Environments
+.env
+.venv
+venv/
+gemini-video/
+handi-llm/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Temporary files
+temp_audio/
+*.m4a
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Claude settings
+.claude/

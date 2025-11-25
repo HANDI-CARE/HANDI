@@ -1,0 +1,296 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap");
+@import url("https://hangeul.pstatic.net/hangeul_static/css/NanumBarunGothicYetHangul.css");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    sans-serif;
+  --font-noto-sans: "Noto Sans KR", sans-serif;
+  --font-pretendard: "Pretendard", sans-serif;
+  --font-nanum-yethangul: "NanumBarunGothicYetHangul", serif;
+
+  /* 기본 색상을 시안-8로 변경 */
+  --color-primary: #006d75;
+  --color-primary-hover: #00838f;
+  --color-primary-active: #004d52;
+
+  /* Tailwind 기본 색상 재정의 */
+  --color-blue-500: #006d75;
+  --color-blue-600: #00838f;
+  --color-blue-700: #004d52;
+
+  /* 시안 색상 팔레트 */
+  --color-cyan-50: #e6fffb;
+  --color-cyan-100: #b5f5ec;
+  --color-cyan-200: #87e8de;
+  --color-cyan-300: #5cdbd3;
+  --color-cyan-400: #36cfc9;
+  --color-cyan-500: #13c2c2;
+  --color-cyan-600: #08979c;
+  --color-cyan-700: #006d75;
+  --color-cyan-800: #00474f;
+  --color-cyan-900: #002329;
+}
+
+html,
+body {
+  @apply bg-white dark:bg-gray-950;
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", sans-serif;
+
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+}
+
+/* Recharts 클릭 시 주변에 나타나는 검은 테두리 제거 */
+svg.recharts-surface {
+  outline: none !important;
+}
+
+/* Ant Design 기본 색상 재정의 */
+:root {
+  --ant-primary-color: #006d75;
+  --ant-primary-color-hover: #00838f;
+  --ant-primary-color-active: #004d52;
+  --ant-primary-color-outline: rgba(0, 109, 117, 0.2);
+}
+
+/* 메뉴 텍스트 색상 설정 */
+.ant-menu-title-content {
+  color: #000000 !important;
+}
+
+.ant-menu-item-selected .ant-menu-title-content {
+  color: #08979c !important;
+}
+
+/* 부모 메뉴가 선택되었을 때 텍스트 색상 */
+.ant-menu-submenu-selected .ant-menu-title-content {
+  color: #08979c !important;
+}
+
+/* 메뉴 아이콘 색상 설정 */
+.ant-menu-item .anticon,
+.ant-menu-submenu .anticon {
+  color: #000000 !important;
+}
+
+.ant-menu-item-selected .anticon,
+.ant-menu-submenu-selected .anticon {
+  color: #08979c !important;
+}
+
+/* 화살표 아이콘은 항상 검은색으로 설정 */
+.ant-menu-submenu-arrow {
+  color: #000000 !important;
+}
+
+/* 서브메뉴 배경색을 흰색으로 설정 */
+.ant-menu-sub {
+  background-color: #ffffff !important;
+}
+
+/* Ant Design 컴포넌트들의 기본 색상을 시안-8로 변경 */
+.ant-btn-primary {
+  background-color: #006d75 !important;
+  border-color: #006d75 !important;
+}
+
+.ant-btn-primary:hover {
+  background-color: #00838f !important;
+  border-color: #00838f !important;
+}
+
+.ant-btn-primary:active {
+  background-color: #004d52 !important;
+  border-color: #004d52 !important;
+}
+
+/* Primary 버튼 비활성화 상태에서 텍스트 가독성 개선 */
+.ant-btn-primary.ant-btn-disabled,
+.ant-btn-primary.ant-btn-disabled:hover,
+.ant-btn-primary.ant-btn-disabled:active,
+.ant-btn-primary[disabled],
+.ant-btn-primary[disabled]:hover,
+.ant-btn-primary[disabled]:active,
+.ant-btn-primary:disabled,
+.ant-btn-primary:disabled:hover,
+.ant-btn-primary:disabled:active {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.ant-btn-primary.ant-btn-disabled .anticon,
+.ant-btn-primary[disabled] .anticon,
+.ant-btn-primary:disabled .anticon {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.ant-btn-link {
+  color: #006d75 !important;
+}
+
+.ant-btn-link:hover {
+  color: #00838f !important;
+}
+
+.ant-link {
+  color: #006d75 !important;
+}
+
+.ant-link:hover {
+  color: #00838f !important;
+}
+
+.ant-menu-item-selected {
+  background-color: #e6fffb !important;
+  color: #006d75 !important;
+}
+
+.ant-menu-item:hover {
+  color: #006d75 !important;
+}
+
+/* 사이드바 메뉴 선택된 항목 스타일 */
+.custom-sidebar-menu .ant-menu-item-selected {
+  background-color: #e6fffb !important;
+  color: #006d75 !important;
+}
+
+.custom-sidebar-menu .ant-menu-item-selected .anticon {
+  color: #006d75 !important;
+}
+
+.custom-sidebar-menu .ant-menu-item:hover {
+  background-color: #e6fffb !important;
+  color: #006d75 !important;
+}
+
+.ant-tabs-tab-active {
+  color: #006d75 !important;
+}
+
+.ant-tabs-ink-bar {
+  background-color: #006d75 !important;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #006d75 !important;
+  border-color: #006d75 !important;
+}
+
+.ant-radio-checked .ant-radio-inner {
+  border-color: #006d75 !important;
+}
+
+.ant-radio-checked .ant-radio-inner::after {
+  background-color: #006d75 !important;
+}
+
+.ant-switch-checked {
+  background-color: #006d75 !important;
+}
+
+.ant-slider-track {
+  background-color: #006d75 !important;
+}
+
+.ant-slider-handle {
+  border-color: #006d75 !important;
+}
+
+.ant-progress-bg {
+  background-color: #006d75 !important;
+}
+
+// kykint: 의도를 모르겠어서 비활성화
+/*
+.ant-alert-success {
+  border-color: #006d75 !important;
+}
+
+.ant-alert-success .ant-alert-icon {
+  color: #006d75 !important;
+}
+*/
+
+/* Steps 컴포넌트 색상 변경 */
+.ant-steps-item-process .ant-steps-item-icon {
+  background-color: #006d75 !important;
+  border-color: #006d75 !important;
+}
+
+.ant-steps-item-finish .ant-steps-item-icon {
+  background-color: #006d75 !important;
+  border-color: #006d75 !important;
+}
+
+.ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
+  color: white !important;
+}
+
+.ant-steps-item-process .ant-steps-item-icon > .ant-steps-icon {
+  color: white !important;
+}
+
+.ant-steps-item-finish
+  > .ant-steps-item-container
+  > .ant-steps-item-content
+  > .ant-steps-item-title::after {
+  background-color: #006d75 !important;
+}
+
+.ant-steps-item-process
+  > .ant-steps-item-container
+  > .ant-steps-item-content
+  > .ant-steps-item-title {
+  color: #006d75 !important;
+}
+
+.ant-steps-item-finish
+  > .ant-steps-item-container
+  > .ant-steps-item-content
+  > .ant-steps-item-title {
+  color: #006d75 !important;
+}
+
+/* 폰트 클래스 정의 */
+.font-noto-sans {
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.font-pretendard {
+  font-family: "Pretendard", sans-serif;
+}
+
+/* 나눔바른고딕 옛한글 폰트 클래스 */
+.font-nanum-yethangul {
+  font-family: "NanumBarunGothicYetHangul", serif;
+}
+
+/* Global scrollbar styles */
+
+/* WebKit (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 12px; /* vertical */
+  height: 12px; /* horizontal */
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #d1d5db; /* light gray */
+  border-radius: 9999px;
+  border: 2px solid transparent; /* creates padding for slimmer look */
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #b9c0c7; /* slightly darker on hover */
+}

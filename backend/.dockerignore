@@ -1,0 +1,56 @@
+# Build outputs (JAR 파일은 필요하므로 build/libs는 포함)
+build/
+!build/libs/
+.gradle/
+bin/
+out/
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+README.md
+*.md
+docs/
+
+# Docker files
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+
+# Logs and temporary files
+*.log
+logs/
+temp/
+tmp/
+
+# Test outputs
+test-results/
+coverage/
+
+# Environment files (Docker Compose에서 환경변수 주입하므로 제외)
+.env
+.env.*
+
+# Frontend 관련 (혹시 있다면)
+node_modules/
+npm-debug.log
+.nyc_output
+
+# Cache directories
+.cache/

@@ -1,0 +1,44 @@
+redis:
+    address: redis-a:6379
+    password: StrongRedisPass!234
+    db: 0
+    use_tls: false
+
+api_key: APIabcdefgAPIabcdefgAPIabcdefgAPIabcdefgAPIabcdefg
+api_secret: lkbase64style_AbCdEfGhIjKlMnOpQrStUvWxYz1234567890AbCdEfGhIjKlMnOpQrStUvWxYz1234567890AbCdEfGhIjKlMnOpQrStUvWxYz1234567890
+
+ws_url: ws://openvidu:8010
+health_port: 9091
+
+audio:
+  driver: "pulse"  # 또는 "pulse", "alsa"
+  sample_rate: 48000
+  channels: 2
+
+# Files will be moved here when uploads fail.
+# 주소로 못찾아가면 이 경로로
+backup:
+    prefix: /home/egress/backup_storage
+
+# Storage for recordings.
+storage:
+    s3:
+        access_key: openvidu_minio_admin
+        secret: OVminioSecret!234
+        # Default region for minio
+        region: us-east-1
+        endpoint: http://minio:9000
+        bucket: openvidu-appdata
+        force_path_style: true
+
+
+# CPU cost for each type of Egress operation.
+cpu_cost:
+    max_cpu_utilization: 0.80
+    room_composite_cpu_cost: 0.01
+    audio_room_composite_cpu_cost: 0.01
+    web_cpu_cost: 0.01
+    audio_web_cpu_cost: 0.01
+    participant_cpu_cost: 0.01
+    track_composite_cpu_cost: 0.01
+    track_cpu_cost: 0.01

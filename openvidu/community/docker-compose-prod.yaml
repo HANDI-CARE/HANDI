@@ -1,0 +1,309 @@
+services:
+  caddy-proxy:
+    image: docker.io/openvidu/openvidu-caddy-local:3.3.0
+    platform: linux/amd64
+    container_name: openvidu-caddy-proxy-prod
+    restart: unless-stopped
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      - LAN_DOMAIN=${LAN_DOMAIN:-}
+      - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
+      - LAN_MODE=${LAN_MODE:-false}
+      - USE_HTTPS=${USE_HTTPS:-true}
+      - LIVEKIT_WEBHOOK_API_KEY=${LIVEKIT_API_KEY:-}
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - DASHBOARD_ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-}
+      - DASHBOARD_ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
+      - HTTP_PORT=8880
+      - HTTPS_PORT=8443
+    volumes:
+      - ./custom-layout:/var/www/custom-layout
+      # - ./caddy-extra/minio.conf:/etc/caddy/Caddyfile.d/minio.conf:ro
+    ports:
+      - 8880:8880
+      - 8443:8443
+      - 8010:8010
+      # - 5443:5443 # 제거해도 될듯
+      # - 6443:6443 # 제거해도 될듯
+      # - 7443:7443
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8010"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+    networks:
+      - handi-network
+
+  redis-a:
+    image: docker.io/redis:7.4.4-alpine
+    platform: linux/amd64
+    container_name: openvidu-redis-prod
+    restart: unless-stopped
+    ports: []
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - redis:/data
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "PING"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+    networks:
+      - handi-network
+
+  minio:
+    image: docker.io/bitnami/minio:2025.5.24-debian-12-r1
+    platform: linux/amd64
+    container_name: openvidu-minio-prod
+    restart: unless-stopped
+    ports: []
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-}
+      - MINIO_DEFAULT_BUCKETS=openvidu-appdata
+      - MINIO_CONSOLE_SUBPATH=/minio-console
+      - MINIO_BROWSER_REDIRECT_URL=https://${LAN_DOMAIN:-localhost}/minio-console
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 6
+    volumes:
+      - minio-data:/bitnami/minio/data
+      - minio-certs:/certs
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+    networks:
+      - handi-network
+
+  # mongo:
+  #   image: docker.io/bitnami/mongodb:8.0.9
+  #   platform: linux/amd64
+  #   container_name: openvidu-mongo-prod
+  #   restart: unless-stopped
+  #   ports: []
+  #   volumes:
+  #     - mongo-data:/bitnami/mongodb
+  #   networks:
+  #     - handi-network
+  #   environment:
+  #     - MONGODB_ROOT_USER=${MONGO_ADMIN_USERNAME:-}
+  #     - MONGODB_ROOT_PASSWORD=${MONGO_ADMIN_PASSWORD:-}
+  #     - MONGODB_ADVERTISED_HOSTNAME=mongo
+  #     - MONGODB_REPLICA_SET_MODE=primary
+  #     - MONGODB_REPLICA_SET_NAME=rs0
+  #     - MONGODB_REPLICA_SET_KEY=${MONGODB_REPLICA_SET_KEY:-}
+  #     - EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU=${EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU:-0}
+  #   healthcheck:
+  #     test: ["CMD", "bash", "-lc", "mongosh --quiet --eval 'db.runCommand({ ping: 1 })' || exit 1"]
+  #     interval: 20s
+  #     timeout: 5s
+  #     retries: 10
+  #   depends_on:
+  #     setup:
+  #       condition: service_completed_successfully
+
+  # dashboard:
+  #   image: docker.io/openvidu/openvidu-dashboard:3.3.0
+  #   platform: linux/amd64
+  #   container_name: openvidu-dashboard-prod
+  #   restart: unless-stopped
+  #   environment:
+  #     - SERVER_PORT=5000
+  #     - ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-}
+  #     - ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-}
+  #     # - DATABASE_URL=mongodb://${MONGO_ADMIN_USERNAME}:${MONGO_ADMIN_PASSWORD}@mongo:27017/?replicaSet=rs0&readPreference=primaryPreferred
+  #   depends_on:
+  #     setup:
+  #       condition: service_completed_successfully
+  #   ports: []
+  #   networks:
+  #     - handi-network
+
+  openvidu:
+    image: docker.io/openvidu/openvidu-server:3.3.0
+    platform: linux/amd64
+    restart: unless-stopped
+    container_name: openvidu-server-prod
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      LAN_PRIVATE_IP: ${LAN_PRIVATE_IP:-}
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY:-}: ${LIVEKIT_API_SECRET:-}"
+      LIVEKIT_WEBHOOK_API_KEY: ${LIVEKIT_API_KEY:-}
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:-}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:-}
+      MONGO_ADMIN_USERNAME: ${MONGO_ADMIN_USERNAME:-}
+      MONGO_ADMIN_PASSWORD: ${MONGO_ADMIN_PASSWORD:-}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    ports:
+      - 3478:3478/udp
+      - 8011:8011/tcp # TCP 폴백 쓸 경우
+      - 8020-8119:8020-8119/udp
+      # - 40000-50000:40000-50000/udp   # TURN 릴레이 필요 시
+    entrypoint: /bin/sh /scripts/entrypoint.sh
+    command: --config /etc/livekit.yaml
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml
+      - ./scripts/entrypoint_openvidu.sh:/scripts/entrypoint.sh
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+    networks:
+      - handi-network
+
+  ingress:
+    image: docker.io/openvidu/ingress:3.3.0
+    platform: linux/amd64
+    restart: unless-stopped
+    container_name: openvidu-ingress-prod
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    ports: []
+    environment:
+      - INGRESS_CONFIG_FILE=/etc/ingress.yaml
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - ./ingress.yaml:/etc/ingress.yaml
+      - ./scripts/entrypoint_ingress.sh:/scripts/entrypoint.sh
+    entrypoint: /bin/sh /scripts/entrypoint.sh
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+    networks:
+      - handi-network
+
+  egress:
+    image: docker.io/livekit/egress:v1.9.1
+    platform: linux/amd64
+    restart: unless-stopped
+    container_name: openvidu-egress-prod
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      - EGRESS_CONFIG_FILE=/etc/egress.yaml
+    privileged: true
+    volumes:
+      - ./egress.yaml:/etc/egress.yaml
+      - egress-data:/home/egress/tmp
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+    networks:
+      - handi-network
+
+  operator:
+    image: docker.io/openvidu/openvidu-operator:3.3.0
+    platform: linux/amd64
+    container_name: openvidu-operator-prod
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - agents-config:/agents-config
+      - ./:/deployment
+    environment:
+      - PLATFORM=linux/amd64
+      - MODE=agent-manager-local
+      - DEPLOYMENT_FILES_DIR=/deployment
+      - AGENTS_CONFIG_DIR=/agents-config
+      - NETWORK_NAME=handi-network
+      - AGENTS_CONFIG_VOLUME=openvidu-agents-config
+      - LIVEKIT_URL=ws://openvidu:8010/
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
+      - REDIS_ADDRESS=openvidu-redis-prod:6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+    networks:
+      - handi-network
+
+  ready-check:
+    image: docker.io/curlimages/curl:8.13.0
+    platform: linux/amd64
+    container_name: openvidu-ready-check-prod
+    restart: on-failure
+    environment:
+      - USE_HTTPS=${USE_HTTPS:-false}
+      - LAN_DOMAIN=${LAN_DOMAIN:-}
+      - LAN_MODE=${LAN_MODE:-false}
+      - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
+      - DASHBOARD_ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-}
+      - DASHBOARD_ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    depends_on:
+      - openvidu
+      - ingress
+      - egress
+      # - dashboard
+      - minio
+      # - mongo
+    volumes:
+      - ./scripts/ready-check.sh:/scripts/ready-check.sh
+      - ./scripts/utils.sh:/scripts/utils.sh
+    command: /bin/sh /scripts/ready-check.sh
+    networks:
+      - handi-network
+
+  setup:
+    image: docker.io/busybox:1.37.0
+    platform: linux/amd64
+    container_name: openvidu-setup-prod
+    restart: "no"
+    volumes:
+      - minio-data:/minio
+      - egress-data:/egress
+      - ./scripts/setup.sh:/scripts/setup.sh
+      # - mongo-data:/mongo
+    environment:
+      - USE_HTTPS=${USE_HTTPS:-false}
+      - LAN_MODE=${LAN_MODE:-false}
+      - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
+      - RUN_WITH_SCRIPT=${RUN_WITH_SCRIPT:-false}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    user: root
+    command: /bin/sh /scripts/setup.sh
+    networks:
+      - handi-network
+
+volumes:
+  agents-config:
+    name: openvidu-agents-config
+  minio-certs:
+    name: openvidu-minio-certs
+  redis:
+    name: openvidu-redis
+  minio-data:
+    name: openvidu-minio-data
+  egress-data:
+    name: openvidu-egress-data
+  # mongodb-config:
+  #   name: openvidu-mongodb-config
+  # mongo-data:
+  #   name: openvidu-mongo-data
+
+networks:
+  handi-network:
+    external: true
+    name: handi-network

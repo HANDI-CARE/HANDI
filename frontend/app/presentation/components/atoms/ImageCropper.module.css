@@ -1,0 +1,17 @@
+.cropperContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.sourceImage {
+  display: block;
+  max-width: 100%;
+  user-select: none;
+}
+
+.overlayCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: crosshair;
+}

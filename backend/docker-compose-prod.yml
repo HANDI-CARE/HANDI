@@ -1,0 +1,140 @@
+# docker-compose -f docker-compose-prod.yml up -d
+# 이 파일은 Docker Compose를 사용하여 Handi 애플리케이션의 프로덕션 환경을 설정하는 데 사용됩니다
+
+services:
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: handi-redis-prod
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:6379:6379
+    volumes:
+      - redis_data:/data
+    networks:
+      - handi-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: handi-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: handi
+      POSTGRES_USER: handi
+      POSTGRES_PASSWORD: ${PASS}
+    ports:
+      - 127.0.0.1:5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - handi-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U handi -d handi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MinIO
+  handi-minio:
+    image: minio/minio:latest
+    container_name: handi-minio-db
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: handi            # 관리자 사용자명
+      MINIO_ROOT_PASSWORD: ${PASS}     # 관리자 비밀번호
+    command: server /data --console-address ":9001"
+    ports:
+      - 127.0.0.1:9100:9000
+      - 127.0.0.1:9101:9001
+    volumes:
+      - minio_data:/data               # 데이터 저장 경로
+    networks:
+      - handi-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # Backend Application (Production)
+  backend:
+    image: kyngmn/handi-backend:${BUILD_TAG:-latest}
+    container_name: handi-backend-prod
+    environment:
+      TZ: Asia/Seoul
+      JAVA_OPTS: -Duser.timezone=Asia/Seoul
+      # JPA ddl auto
+      # db 밀때 이거 참고하세요
+      # JPA_HIBERNATE_DDL_AUTO: none
+
+      FASTAPI_HTTP_URL: ${FASTAPI_HTTP_URL}
+
+      # LIVEKIT_URL: ws://caddy-proxy:7880
+      LIVEKIT_HTTP_URL: http://openvidu-caddy-proxy-prod:8880
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET}
+
+      # MinIO : 전자 문서
+      # MINIO_ENDPOINT : http://handi-minio:9000
+      # MINIO_ENDPOINT : https://ai.brewprint.xyz
+      MINIO_ENDPOINT : https://docs.brewprint.xyz
+      MINIO_ACCESS_KEY: handi
+      MINIO_SECRET_KEY: ${PASS}
+
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/handi
+      SPRING_DATASOURCE_USERNAME: handi
+      SPRING_DATASOURCE_PASSWORD: ${PASS}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      
+      # RabbitMQ
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: handi
+      SPRING_RABBITMQ_PASSWORD: ${PASS}
+
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update # validate
+      SPRING_JPA_SHOW_SQL: false
+      SPRING_SQL_INIT_MODE: never # 초기 실행하고 never로 돌리기
+      
+      NAVER_ID: ${NAVER_ID}
+      NAVER_SECRET: ${NAVER_SECRET}
+      NAVER_URI: ${NAVER_URI}
+      GOOGLE_ID: ${GOOGLE_ID}
+      GOOGLE_SECRET: ${GOOGLE_SECRET}
+      GOOGLE_URI: ${GOOGLE_URI}
+      KAKAO_ID: ${KAKAO_ID}
+      KAKAO_URI: ${KAKAO_URI}
+      JWT_SECRET: ${JWT_SECRET}
+      TWILIO_VERIFY_SERVICE_SID: ${TWILIO_VERIFY_SERVICE_SID}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_FROM_NUMBER: ${TWILIO_FROM_NUMBER}
+    ports:
+      - 127.0.0.1:8080:8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      handi-minio:
+        condition: service_healthy
+    networks:
+      - handi-network
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  postgres_data:
+  minio_data:
+
+networks:
+  handi-network:
+    external: true
+    name: handi-network

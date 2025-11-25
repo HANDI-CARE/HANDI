@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handi 로그인</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            min-width: 350px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+        .section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .oauth-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            margin: 10px 0;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            box-sizing: border-box;
+        }
+        .oauth-btn:hover {
+            transform: translateY(-1px);
+        }
+        .google-btn {
+            background: #db4437;
+        }
+        .google-btn:hover {
+            background: #c23321;
+        }
+        .naver-btn {
+            background: #03C75A;
+        }
+        .naver-btn:hover {
+            background: #02B352;
+        }
+        .kakao-btn {
+            background: #FEE500;
+            color: #333;
+        }
+        .kakao-btn:hover {
+            background: #E6CE00;
+        }
+        .mock-section {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .email-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .mock-btn {
+            background: #6c757d;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        .mock-btn:hover {
+            background: #5a6268;
+        }
+        .info-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>🏥 Handi</h1>
+        <p style="color: #666; margin-bottom: 2rem;">시니어 케어 관리 시스템</p>
+        
+        <div class="section">
+            <div class="section-title">소셜 로그인</div>
+            <a href="/oauth2/authorization/google" class="oauth-btn google-btn">
+                🔑 Google로 로그인
+            </a>
+            <a href="/oauth2/authorization/naver" class="oauth-btn naver-btn">
+                🔑 Naver로 로그인
+            </a>
+            <a href="/oauth2/authorization/kakao" class="oauth-btn kakao-btn">
+                🔑 Kakao로 로그인
+            </a>
+        </div>
+
+        <div class="section">
+            <div class="section-title">개발용 Mock 로그인</div>
+            <div class="mock-section">
+                <input type="email" id="mockEmail" class="email-input" placeholder="이메일 입력 (예: admin@test.com)" value="admin@test.com">
+                <button class="mock-btn" onclick="mockLogin()">Mock 로그인</button>
+                <div class="info-text">
+                    개발 및 테스트용 가상 로그인입니다.<br>
+                    로그인 후 <a href="/mock-oauth/index.html" target="_blank">/mock-oauth</a>에서 토큰 확인 가능
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function mockLogin() {
+            const email = document.getElementById('mockEmail').value;
+            if (!email) {
+                alert('이메일을 입력해주세요.');
+                return;
+            }
+            
+            // Mock OAuth 엔드포인트로 리다이렉트
+            window.location.href = `/mock-oauth?email=${encodeURIComponent(email)}`;
+        }
+    </script>
+</body>
+</html>

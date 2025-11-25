@@ -1,0 +1,54 @@
+.container {
+  position: relative;
+  display: inline-block;
+  user-select: none; /* Prevent text selection while dragging */
+}
+
+.image {
+  display: block;
+  max-width: 100%;
+  pointer-events: none; /* Make sure mouse events go to the container */
+}
+
+.mask {
+  position: absolute;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.predefined {
+  background-color: rgba(255, 192, 203, 0.5); /* semi-transparent pink */
+  border: 1px solid deeppink;
+}
+
+.predefined:hover {
+  background-color: deeppink;
+}
+
+.predefined.active {
+  background-color: black;
+  border: 1px solid black;
+}
+
+.predefined.active:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.custom {
+  background-color: black;
+  border: 1px solid black;
+}
+
+.custom:hover {
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+}
+
+.drawing {
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px dashed black;
+  pointer-events: none; /* Don't let the drawing mask interfere with mouse events */
+}
+
+.highlight {
+  border: 2px solid yellow;
+}

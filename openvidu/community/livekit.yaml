@@ -1,0 +1,56 @@
+# OpenVidu configuration
+openvidu:
+    analytics:
+        enabled: false
+        interval: 10s
+        expiration: 768h # 32 days
+        mongo_url: mongodb://${MONGO_ADMIN_USERNAME}:${MONGO_ADMIN_PASSWORD}@mongo:27017/?replicaSet=rs0&readPreference=primaryPreferred
+
+# LiveKit configuration
+port: 8010
+bind_addresses:
+    - ""
+rtc:
+    tcp_port: 8011
+    port_range_start: 8020
+    port_range_end: 8119
+
+redis:
+    address: openvidu-redis-prod:6379
+    password: ${REDIS_PASSWORD}
+    db: 0
+    use_tls: false
+
+turn:
+    enabled: true
+    udp_port: 3478
+    relay_range_start: 40000
+    relay_range_end: 50000
+
+# 키/시크릿은 YAML이 아니라 환경변수 LIVEKIT_KEYS로 주입
+# keys:
+#     ${LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET}
+
+# /api/v1/video/livekit/webhook -> 백엔드
+webhook:
+    api_key: ${LIVEKIT_WEBHOOK_API_KEY}
+    urls:
+        - http://host.docker.internal:8080/api/v1/video/livekit/webhook
+        - https://api.brewprint.xyz/api/v1/video/livekit/webhook
+        # - http://host.docker.internal:6080/livekit/webhook
+        # - http://default-app:6080/livekit/webhook
+
+ingress:
+    rtmp_base_url: rtmp://localhost:1935/rtmp
+    whip_base_url: http://localhost:8085/whip
+
+logging:
+    # Logging level for the LiveKit server.
+    # Values: debug, info, warn, error.
+    # Default: info.
+    level: debug
+
+    # Logging level for the Pion WebRTC engine.
+    # Values: trace, debug, info, warn, error.
+    # Default: error.
+    pion_level: warn

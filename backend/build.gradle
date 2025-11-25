@@ -1,0 +1,110 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.5'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+// prod 환경에서 spring-jcl 권고에 따라 commons-logging 충돌 방지
+configurations.all {
+    exclude group: 'commons-logging', module: 'commons-logging'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	
+	// PostgreSQL (commented out for initial setup)
+	 runtimeOnly 'org.postgresql:postgresql'
+	
+	// H2 Database for development
+	//	runtimeOnly 'com.h2database:h2'
+	
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	
+	// Swagger UI (OpenAPI 3.0)
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8'
+	
+	// Test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Jackson for JSON processing
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.java-websocket:Java-WebSocket:1.5.4'
+
+
+	//Firebase
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
+
+
+	// JWT Token
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+	// oauth2-client
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// MiniO
+	implementation("io.minio:minio:8.5.17")
+
+	// Twilio
+	implementation 'com.twilio.sdk:twilio:11.0.0-rc.3'
+
+	// Apache Tika for file type detection ( 파일 확장자 검증 )
+	implementation 'org.apache.tika:tika-core:2.9.1'
+
+
+	// LiveKit Server SDK 추가
+	implementation 'io.livekit:livekit-server:0.8.2'
+
+	// OkHttp (LiveKit에서 사용)
+	implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+
+	// Retrofit (LiveKit Egress에서 사용)
+	implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+	implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+	// RabbitMQ
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+	// MultipartFile 변환용
+	implementation 'org.springframework:spring-test'
+
+	// Json 타입 저장용
+	implementation 'com.vladmihalcea:hibernate-types-60:2.21.1'
+
+}
+
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+} 

@@ -1,0 +1,9 @@
+# Intellij IDEA project files
+.idea/*
+# credentials 더미 추가용
+jenkins*credentials.groovy
+
+.DS_Store
+
+.env*
+openapi.json

@@ -1,0 +1,22 @@
+redis:
+    address: redis-a:6379
+    password: ${REDIS_PASSWORD}
+    db: 0
+    use_tls: false
+
+api_key: ${LIVEKIT_API_KEY}
+api_secret: ${LIVEKIT_API_SECRET}
+ws_url: ws://openvidu:8010
+
+rtmp_port: 1935
+whip_port: 8085
+http_relay_port: 9090
+health_port: 9091
+
+logging:
+    json: false
+    level: debug
+
+development: false
+rtc_config:
+    udp_port: 7895

@@ -1,0 +1,209 @@
+# Exclude local virtualenvs and caches from Docker build context
+venv/
+.venv/
+env/
+.env
+.env.*
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+.git/
+.gitignore
+node_modules/
+dist/
+build/
+*.log
+# Ignore everything that isn't needed to run the app
+.git
+.gitignore
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.venv
+venv
+env
+*.egg-info
+dist
+build
+
+# Editor/OS
+.DS_Store
+.idea
+.vscode
+
+# Python caches
+.mypy_cache
+.pytest_cache
+
+# Local environment files
+.env
+.env.*
+
+# Data, models, caches (mounted at runtime if needed)
+chroma_db_path/
+vector_db/
+downloads/
+models/
+cache/
+*.gguf
+evaluation/
+
+# Logs and temp
+logs/
+tmp/
+*.log
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+
+# Git 관련 파일
+.git
+.gitignore
+.github/
+
+# Python 캐시 및 바이너리 파일
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 가상환경 (중요: 이미지 크기 급증 원인)
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+pharm-guard-env/
+.venv/
+.conda/
+
+# 로컬 캐시 (Docker 이미지 크기 급증 원인)
+.cache/
+__pycache__/
+*.pyc
+*.pyo
+.transformers_cache/
+.torch/
+.huggingface/
+.sentence_transformers_cache/
+.models/
+site-packages/
+pip-cache/
+
+# IDE 설정 파일
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 로그 파일
+*.log
+logs/
+
+# OS 관련 파일
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 테스트 관련 (dev 의존성)
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+tests/
+
+# 문서 및 마크다운 (용량 절약)
+*.md
+docs/
+README*
+
+# 개발/연구/데이터 파일 (용량 절약)
+research/
+evaluation/
+data/
+*.csv
+*.xlsx
+*.json
+start_guide.md
+
+# 압축 파일
+*.zip
+*.tar.gz
+*.tar
+*.rar
+react.zip
+
+# 임시 파일
+tmp/
+temp/
+*.tmp
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# 환경변수 파일 (보안상 이미지에 포함하지 않음)
+.env
+.env.*
+!.env.example
+
+# 기타 불필요한 파일
+node_modules/
+
+# Docker 관련
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+
+# 모델/캐시 파일 (런타임에 다운로드)
+models/
+*.bin
+*.safetensors
+*.h5
+
+# 개발 도구
+.pre-commit-config.yaml
+setup.py
+setup.cfg
+pyproject.toml
+poetry.lock
+Pipfile*

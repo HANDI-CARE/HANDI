@@ -1,0 +1,108 @@
+services:
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    ports:
+      - "8000:8000"
+    environment:
+      IS_PERSISTENT: "TRUE"
+      ANONYMIZED_TELEMETRY: "TRUE"
+    volumes:
+      - ./vectordb/chroma_db_path:/chroma/chroma
+    restart: unless-stopped
+    networks:
+      - handi-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: handi-rabbitmq
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_DEFAULT_USER: handi
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - handi-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  handi-pharmguard:
+    image: kyngmn/handi-pharmguard:latest
+    container_name: handi-pharmguard
+    ports:
+      - "5500:5500"
+    env_file:
+      - .env
+    environment:
+      # Override host/port so the app connects to the dockerized ChromaDB service
+      CHROMADB_HOST: chromadb
+      CHROMADB_PORT: "8000"
+    restart: unless-stopped
+    depends_on:
+      - chromadb
+    networks:
+      - handi-network
+
+    # 모델/토치 캐시를 영속화하려면 아래 볼륨을 활성화하세요.
+    # volumes:
+    #   - pharm_hf:/tmp/hf_cache
+    #   - pharm_torch:/tmp/torch_cache
+
+  handi-llm:
+    image: kyngmn/handi-llm:latest
+    container_name: handi-llm
+    ports:
+      - "5501:5501"
+    env_file:
+      - .env
+    environment:
+      CHROMADB_HOST: chromadb
+      CHROMADB_PORT: "8000"
+    depends_on:
+      - chromadb
+      - rabbitmq
+    restart: unless-stopped
+    networks:
+      - handi-network
+
+  vectordb-init:
+    build:
+      context: ./pharmguard
+      dockerfile: Dockerfile
+    container_name: vectordb-init
+    working_dir: /app
+    command: >-
+      bash -c "
+      /opt/venv/bin/python vectordb/wait_for_chromadb.py && \
+      /opt/venv/bin/python vectordb/script/medicine_total_info_ingestor.py && \
+      /opt/venv/bin/python vectordb/script/medicine_detail_info_ingestor.py && \
+      /opt/venv/bin/python vectordb/script/senior_danger_medicine_ingestor.py && \
+      /opt/venv/bin/python vectordb/script/senior_danger_ingredient_ingestor.py
+      "
+    environment:
+      CHROMADB_HOST: chromadb
+      CHROMADB_PORT: "8000"
+    volumes:
+      - ./:/app:ro
+    depends_on:
+      - chromadb
+    restart: "no"
+    networks:
+      - handi-network
+
+volumes:
+  rabbitmq_data:
+  # pharm_hf:
+  # pharm_torch:
+
+networks:
+  handi-network:
+    external: true
+    name: handi-network
+
+

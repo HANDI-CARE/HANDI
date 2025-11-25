@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "51617596552",
+    "project_id": "handi-1da71",
+    "storage_bucket": "handi-1da71.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:51617596552:android:c1a507b91644c0bf7a8b3d",
+        "android_client_info": {
+          "package_name": "com.example.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-uPyBwliExGdeeqCxxT5dFb5EsLcmPS0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:51617596552:android:a58655a21cc371157a8b3d",
+        "android_client_info": {
+          "package_name": "com.kykint.handi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-uPyBwliExGdeeqCxxT5dFb5EsLcmPS0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

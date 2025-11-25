@@ -1,0 +1,14 @@
+# JRE 17이 설치된 경량 리눅스 이미지를 기반으로 사용 (패키징 전용)
+FROM openjdk:17-jdk-slim
+
+# 작업 디렉토리 생성 및 이동
+WORKDIR /app
+
+# Jenkins에서 빌드된 JAR 파일을 컨테이너에 복사 (plain이 아닌 실행 가능한 JAR만)
+COPY build/libs/*-SNAPSHOT.jar ./app.jar
+
+# Spring Boot 기본 포트 8080을 외부에 노출
+EXPOSE 8080
+
+# 컨테이너가 시작될 때 Spring Boot 애플리케이션 실행
+ENTRYPOINT ["java", "-jar", "app.jar"]

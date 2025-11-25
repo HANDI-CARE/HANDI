@@ -1,0 +1,22 @@
+# Exclude local virtualenvs and caches from Docker build context
+handi-llm/
+venv/
+.venv/
+env/
+.env
+.env.*
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+.git/
+.gitignore
+node_modules/
+temp_audio/
+dist/
+build/
+*.log
+

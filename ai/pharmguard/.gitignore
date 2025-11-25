@@ -1,0 +1,147 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Environments
+.env
+.env.local
+.env.production
+.env.staging
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ===== 프로젝트 특화 .gitignore =====
+
+# ChromaDB 데이터 디렉토리
+chroma_db/
+chroma_db_path/
+chroma_db_path*/
+*.db
+*.sqlite
+*.sqlite3
+
+# AI 모델 파일들 (용량이 큰 파일들)
+gemma-3-1b-it-GGUF/
+llama-3.2-Korean-Bllossom-3B-gguf-Q4_K_M/
+app/core/model/gemma-3-1b/
+*.gguf
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.h5
+*.pkl
+*.joblib
+*.model
+models/
+checkpoints/
+weights/
+
+# Google Vision API 키 파일
+*-service-account.json
+service-account-*.json
+credentials.json
+key.json
+
+# 로그 파일
+*.log
+logs/
+log/
+
+# 임시 파일 및 테스트 파일
+tmp/
+temp/
+*.tmp
+*.temp
+test_*.py
+*_test.py
+debug_*.py
+simple_test.py
+test_connection.py
+
+# 업로드된 파일들
+uploads/
+static/uploads/
+media/
+
+# IDE 설정 파일
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS 생성 파일
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# FastAPI 관련
+.pytest_cache/
+htmlcov/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Conda 환경
+.conda/
+
+# Claude Code 설정
+.claude/
+
+# 프라이버시 마스킹 테스트 파일
+../privacy-masking/test_ko.py
+
+pharm-guard-env
